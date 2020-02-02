@@ -3,31 +3,24 @@ from bitly_links import shorten_link, count_clicks, InvalidUrl
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
-TOKEN = os.getenv("BITLY_TOKEN")
-
 
 def create_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('url', nargs='?')
+    parser.add_argument('url')
     return parser
 
 
 def main():
-    parser = create_parser()
-    args = parser.parse_args()
-    if not args.url:
-        print('Введите ссылку: ', end='')
-        url = input().strip()
-    else:
-        url = args.url
+    load_dotenv()
+    token = os.getenv("BITLY_TOKEN")
+    url = create_parser().parse_args().url
 
     try:
         if url.startswith('http://bit.ly/'):
-            count = count_clicks(TOKEN, url)
+            count = count_clicks(token, url)
             print('Количество переходов по ссылке', count)
         else:
-            link = shorten_link(TOKEN, url)
+            link = shorten_link(token, url)
             print('Битлинк', link)
     except InvalidUrl:
         print('Вы ввели не действительную ссылку. Запустите программу еще раз и введите ссылку правильно.')
